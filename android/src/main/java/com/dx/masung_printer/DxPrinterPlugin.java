@@ -3,7 +3,10 @@ package com.dx.masung_printer;
 import android.Manifest;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Message;
 import android.util.Base64;
+import android.util.Log;
+import android.util.Pair;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -18,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
 import static msprintsdk.UtilsTools.convertToBlackWhite;
 
 @CapacitorPlugin(name = "DxPrinter",
@@ -185,13 +189,34 @@ public class DxPrinterPlugin extends Plugin {
         implementation.PrintNvbmp(call.getInt("iNvindex"), call.getInt("iMode"));
         call.resolve();
     };
-    @PluginMethod
 
-    public void GetStatus(PluginCall call) {
-        JSObject ret = new JSObject();
-        ret.put("status", implementation.GetStatus());
-        call.resolve(ret);
+    @PluginMethod
+    private void PrintStatus(PluginCall call) {
+        try {
+            Pair<Integer, String> ret = implementation.PrintStatus();
+            JSObject data = new JSObject();
+            data.put("iResult", ret.first);
+            data.put("strValue", ret.second);
+            call.resolve(data);
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
     }
+
+    @PluginMethod
+    private void CashboxStatus(PluginCall call)
+    {
+        try {
+            Pair<Integer, String> ret = implementation.CashboxStatus();
+            JSObject data = new JSObject();
+            data.put("iResult", ret.first);
+            data.put("strValue", ret.second);
+            call.resolve(data);
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
+    }
+
     @PluginMethod
     public void PrintChargeRow(PluginCall call) { 
         implementation.PrintChargeRow();

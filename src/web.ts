@@ -130,4 +130,14 @@ export class DxPrinterWeb extends WebPlugin implements DxPrinterPlugin {
   SetHTseat(options: { numberbHTseat: number[]; iLength: number }): void {
     return;
   }
+  PrintStatus(): Promise<{ iResult: number; strData: string }> {
+    return new Promise<{ iResult: 0; strData: '' }>(() => {
+      return;
+    });
+  }
+  CashboxStatus(): Promise<{ iResult: number; strData: string }> {
+    return new Promise<{ iResult: 0; strData: '' }>(() => {
+      return;
+    });
+  }
 }

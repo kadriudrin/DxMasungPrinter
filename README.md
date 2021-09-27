@@ -40,13 +40,14 @@ npx cap sync
 * [`PrintMarkpositioncut()`](#printmarkpositioncut)
 * [`PrintMarkcutpaper(...)`](#printmarkcutpaper)
 * [`PrintNvbmp(...)`](#printnvbmp)
-* [`GetStatus()`](#getstatus)
 * [`PrintChargeRow()`](#printchargerow)
 * [`PrintFeedDot(...)`](#printfeeddot)
 * [`PrintNextHT()`](#printnextht)
 * [`SetUnderline(...)`](#setunderline)
 * [`SetCodepage(...)`](#setcodepage)
 * [`SetHTseat(...)`](#sethtseat)
+* [`PrintStatus()`](#printstatus)
+* [`CashboxStatus()`](#cashboxstatus)
 
 </docgen-index>
 
@@ -390,17 +391,6 @@ PrintNvbmp(options: { iNvindex: number; iMode: number; }) => void
 --------------------
 
 
-### GetStatus()
-
-```typescript
-GetStatus() => number
-```
-
-**Returns:** <code>number</code>
-
---------------------
-
-
 ### PrintChargeRow()
 
 ```typescript
@@ -467,6 +457,28 @@ SetHTseat(options: { numberbHTseat: number[]; iLength: number; }) => void
 | Param         | Type                                                 |
 | ------------- | ---------------------------------------------------- |
 | **`options`** | <code>{ numberbHTseat: {}; iLength: number; }</code> |
+
+--------------------
+
+
+### PrintStatus()
+
+```typescript
+PrintStatus() => any
+```
+
+**Returns:** <code>any</code>
+
+--------------------
+
+
+### CashboxStatus()
+
+```typescript
+CashboxStatus() => any
+```
+
+**Returns:** <code>any</code>
 
 --------------------
 

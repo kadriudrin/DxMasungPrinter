@@ -50,11 +50,12 @@ export interface DxPrinterPlugin {
   PrintMarkcutpaper(options: { iMode: number }): void;
   PrintNvbmp(options: { iNvindex: number; iMode: number }): void;
 
-  GetStatus(): number;
   PrintChargeRow(): void;
   PrintFeedDot(options: { Lnumber: number }): void;
   PrintNextHT(): void;
   SetUnderline(options: { underline: number }): void;
   SetCodepage(options: { country: number; CPnumber: number }): void;
   SetHTseat(options: { numberbHTseat: number[]; iLength: number }): void;
+  PrintStatus(): Promise<{ iResult: number; strData: string }>;
+  CashboxStatus(): Promise<{ iResult: number; strData: string }>;
 }

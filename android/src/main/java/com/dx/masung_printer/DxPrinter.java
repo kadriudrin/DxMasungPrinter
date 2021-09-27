@@ -10,16 +10,23 @@ import android.content.pm.PackageManager;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Environment;
+import android.os.Message;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
 
 import java.util.HashMap;
 import java.util.Iterator;
 
 import msprintsdk.PrintCmd;
 import msprintsdk.UsbDriver;
+
+import static android.content.ContentValues.TAG;
 
 public class DxPrinter {
 
@@ -143,11 +150,82 @@ public class DxPrinter {
     public void PrintMarkcutpaper(int iMode) { usbDriver.write(PrintCmd.PrintMarkcutpaper(iMode)); };
     public void PrintNvbmp(int iNvindex,int iMode) { usbDriver.write(PrintCmd.PrintNvbmp(iNvindex,iMode)); };
 
-    public int GetStatus() { return usbDriver.write(PrintCmd.GetStatus()); }
     public void PrintChargeRow() { usbDriver.write(PrintCmd.PrintChargeRow()); }
     public void PrintFeedDot(int Lnumber) { usbDriver.write(PrintCmd.PrintFeedDot(Lnumber)); };
     public void PrintNextHT() { usbDriver.write(PrintCmd.PrintNextHT()); }
     public void SetUnderline(int underline) { usbDriver.write(PrintCmd.SetUnderline(underline)); };
     public void SetCodepage(int country,int CPnumber) { usbDriver.write(PrintCmd.SetCodepage(country,CPnumber)); };
     public void SetHTseat(byte[] bHTseat,int iLength ) { usbDriver.write(PrintCmd.SetHTseat(bHTseat,iLength )); };
+
+    public Pair<Integer, String> PrintStatus() {
+        Integer iResult = 1;
+        String strValue = "";
+        try {
+            int iValue = -1;
+            byte[] bRead1 = new byte[1];
+            if (usbDriver.read(bRead1, PrintCmd.GetStatus1()) > 0) {
+                iValue = PrintCmd.CheckStatus1(bRead1[0]);
+                if(iValue!=0)
+                    strValue = PrintCmd.getStatusDescriptionEn(iValue);
+            }
+
+            if (iValue == 0) {
+                iValue = -1;
+                if (usbDriver.read(bRead1, PrintCmd.GetStatus2()) > 0) {
+                    iValue = PrintCmd.CheckStatus2(bRead1[0]);
+                    if(iValue!=0)
+                        strValue = PrintCmd.getStatusDescriptionEn(iValue);
+                }
+            }
+
+            if (iValue == 0) {
+                iValue = -1;
+                if (usbDriver.read(bRead1, PrintCmd.GetStatus3()) > 0) {
+                    iValue = PrintCmd.CheckStatus3(bRead1[0]);
+                    if(iValue!=0)
+                        strValue = PrintCmd.getStatusDescriptionEn(iValue);
+                }
+            }
+            if (iValue == 0) {
+                iValue = -1;
+                if (usbDriver.read(bRead1, PrintCmd.GetStatus4()) > 0) {
+                    iValue = PrintCmd.CheckStatus4(bRead1[0]);
+                    if(iValue!=0)
+                        strValue = PrintCmd.getStatusDescriptionEn(iValue);
+                }
+            }
+            if(iValue==0) {
+                strValue = PrintCmd.getStatusDescriptionEn(iValue);
+            }
+            iResult = iValue;
+        } catch (Exception e) {
+            strValue = e.getMessage();
+        }
+        return new Pair<Integer, String>(iResult, strValue);
+    }
+
+    public Pair<Integer, String> CashboxStatus()
+    {
+        Integer iResult = -1;
+        String strValue = "Cashbox unknown.";
+        try {
+            byte[] bRead1 = new byte[1];
+            byte[] bCmd = new byte[7];
+            int iIndex=0;
+            bCmd[iIndex++]=0x1B;
+            bCmd[iIndex++]=0x72;
+            bCmd[iIndex++]=0x01;
+
+
+            if (usbDriver.read(bRead1, bCmd) > 0)
+                if(bRead1[0]==1)
+                    strValue = "Cashbox open.";
+                else
+                    strValue = "Cashbox close.";
+
+        } catch (Exception e) {
+            strValue = e.getMessage();
+        }
+        return new Pair<Integer, String>(iResult, strValue);
+    }
 }
